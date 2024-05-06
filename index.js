@@ -5,13 +5,9 @@ import { message } from 'telegraf/filters'
 import User from './src/models/User.js'
 import Event from './src/models/Event.js'
 import dbconnect from './src/config/db.js'
-import OpenAI from 'openai'
 const app = express()
 dotenv.config()
 dbconnect()
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_KEY
-})
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.start(async(ctx) => {
     const from = ctx.update.message.from
@@ -50,26 +46,6 @@ bot.command('generate', async(ctx) => {
         return
     }
     ctx.reply("OpenAI API not working...")
-    // try{
-    //     const chatCompletion = await openai.chat.completions.create({
-    //         messages : [
-    //             {
-    //                 role : 'system',
-    //                 content : 'Act as a senior copywriter, you write highly engaging posts for linkedin, facebook and twitter using provided thoughts/events throughout the day.'
-    //             },
-    //             {
-    //                 role : 'user',
-    //                 content : `Write like a human, for humans. Craft three engaging social media posts tailored for linkedin, twitter and facebook audiences. Use Simple language. Use given time labels just to understand the order of the event, don't mention the time in the posts. Each post should creatively highlight the following events. Ensure the tone is conversational and impactful. Focus on engaging the repective platform's audience, encouraging interaction, and driving interest in the events : ${events.map((event) => event.message).join(',')}`
-    //             }
-    //         ],
-    //         model : process.env.OPENAI_MODEL
-    //     })
-    //     console.log(chatCompletion)
-    // }
-    // catch(err){
-    //     console.log(err)
-    //     await ctx.reply("Something went wrong ! Please try again later.")
-    // }
 })
 bot.on(message('text'), async(ctx) => {
     const from = ctx.update.message.from
