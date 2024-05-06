@@ -8,7 +8,13 @@ import dbconnect from './src/config/db.js'
 const app = express()
 dotenv.config()
 dbconnect()
+const PORT = process.env.PORT
 const bot = new Telegraf(process.env.BOT_TOKEN)
+// ""
+const url = `https://testingtelegrambot.onrender.com`
+const webhook_path = `/telegraf/${process.env.BOT_TOKEN}`
+bot.telegram.setWebhook(`${url}${webhook_path}`)
+app.use(bot.webhookCallback(webhook_path))
 bot.start(async(ctx) => {
     const from = ctx.update.message.from
     try{
@@ -62,12 +68,7 @@ bot.on(message('text'), async(ctx) => {
         await ctx.reply("Something went wrong ! Please try again later.")
     }
 })
-bot.launch()
 
-process.once('SIGINT', () => bot.stop('SIGINT'))
-process.once('SIGTERM', () => bot.stop('SIGTERM'))
-
-const PORT = process.env.PORT
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
